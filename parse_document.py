@@ -70,7 +70,6 @@ def parse_pdf(
 
     reader = PdfReader(file_path)
     documents = []
-    document_hash = hash_file_chunked(file_path)
 
     for page_index, page in enumerate(reader.pages):
         raw_text = page.extract_text() or ""  # handle empty pages gracefully
@@ -97,7 +96,7 @@ def parse_pdf(
             )
             documents.append(doc)
 
-    return documents, document_hash
+    return documents
 
 def parse_html(
     file_path: str, 
@@ -115,7 +114,6 @@ def parse_html(
     """
     if not os.path.isfile(file_path):
         raise FileNotFoundError(f"HTML file not found: {file_path}")
-    document_hash = hash_file_chunked(file_path)
 
 
     with open(file_path, "r", encoding="utf-8") as f:
@@ -154,7 +152,7 @@ def parse_html(
         )
         documents.append(doc)
 
-    return documents, document_hash
+    return documents
 
 if __name__ == "__main__":
     # Example usage
