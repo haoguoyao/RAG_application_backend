@@ -62,6 +62,7 @@ def upload_file_worker(file_path):
         pdf_text = parse_pdf_for_keyword_search(file_path)
         save_chunk_text(pdf_text, f"uploads/{document_hash}.json")
     elif file_ext == '.html':
+        print("html file")
         documents = parse_html(file_path, chunk_size=1000, overlap=100)
         index = build_chroma_index(documents, document_hash)
         html_text = parse_html_for_keyword_search(file_path)

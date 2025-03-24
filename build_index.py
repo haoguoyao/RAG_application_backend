@@ -35,10 +35,8 @@ def build_chroma_index(docs, document_hash):
     if chroma_collection.count() > 0:
         print(f"Document {document_hash} found in Chroma, loading existing index...")
         
-        # Load the index from the stored metadata
         vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-        storage_context = StorageContext.from_defaults(vector_store=vector_store, persist_dir=persist_dir)
-        index = load_index_from_storage(storage_context)
+        index = VectorStoreIndex.from_vector_store(vector_store)
 
     else:
         print(f"Document {document_hash} not found in Chroma, building new index...")
@@ -49,8 +47,6 @@ def build_chroma_index(docs, document_hash):
 
         # Build and persist the index
         index = VectorStoreIndex.from_documents(docs, storage_context=storage_context)
-        index.storage_context.persist(persist_dir=persist_dir)  # ✅ Persist the metadata
-
 
 
     return index
@@ -69,11 +65,13 @@ def get_chroma_index(document_hash):
         print(f"Document {document_hash} found in Chroma, loading existing index...")
 
         # Load stored index metadata from disk
-        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-        storage_context = StorageContext.from_defaults(vector_store=vector_store, persist_dir=persist_dir)
+        # vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+        # storage_context = StorageContext.from_defaults(vector_store=vector_store, persist_dir=persist_dir)
 
         try:
-            index = load_index_from_storage(storage_context)  # ✅ Load metadata
+            vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+        # storage_context = StorageContext.from_defaults(vector_store=vector_store)
+            index = VectorStoreIndex.from_vector_store(vector_store)
             print(f"Index loaded successfully for document {document_hash}")
             return index
         except Exception as e:
